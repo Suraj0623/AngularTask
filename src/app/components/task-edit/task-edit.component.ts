@@ -15,61 +15,95 @@ import { EmployeeService } from '../../shared/employee.service';
 })
 export class TaskEditComponent implements OnInit {
 
-  task: Task | null = null;
+  task: Task = {
+    id: 0,
+    title: '',
+    description: '',
+    employeeId: '',
+    status: 'Pending',
+    dueDate: '',
+    assignedEmployee: {
+      id: 0,
+      name: '',
+      department: ''
+    }
+  };
+  
   employees: { id: number, name: string, department: string }[] = []; // Array to store employee list
 
   constructor(
-    private service: TaskService,
+    private taskService: TaskService,
+    private employeeService: EmployeeService,
     private route: ActivatedRoute,
-    private employeeService:EmployeeService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.loadTask();
+    this.loadEmployees();
+  }
+
+  loadTask(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.getTaskDetails(id);
-    this.getEmployees();
-  }
-  getEmployees(): void {
-    this.employeeService.getEmployees().subscribe(
-      (employees) => {
-        this.employees = employees;
-      },
-      (error)=>{
-        console.error("Error fetching data",error);
-      }
-    );
-  }
-
-  getTaskDetails(id: number): void {
-    this.service.getTaskById(id).subscribe(
-      (task: Task) => {
-        this.task = task;
-      },
-      (error) => {
-        console.error('Error fetching task details', error);
-      }
-    );
-  }
-
-  onUpdateTask(): void {
-    if (this.task) {
-      console.log('Updating Task', this.task); // Check if the task object is correct
-      this.service.updateTask(this.task.id, this.task).subscribe({
-        next: (task: Task) => {
-          console.log('Task updated successfully');
-          this.router.navigate(['/']);
+    if (id) {
+      this.taskService.getTaskById(id).subscribe({
+        next: (task) => {
+          this.task = task;
+  
+          // Ensure assignedEmployee is populated if employeeId exists
+          if (this.task.employeeId) {
+            this.employeeService.getEmployeeById(this.task.employeeId).subscribe({
+              next: (employee) => {
+                this.task.assignedEmployee = employee;
+              },
+              error: (err) => {
+                console.error('Error fetching assigned employee', err);
+              }
+            });
+          }
         },
-        error: (error) => {
-          console.error('Error updating task', error);
-        },
-        complete: () => {
-          console.log('Task update request complete');
+        error: (err) => {
+          console.error('Error fetching task details', err);
         }
       });
-    } else {
-      console.warn('No task found to update');
     }
   }
+  
+
+  loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe({
+      next: (data) => {
+        this.employees = data;
+      },
+      error: (err) => {
+        console.error('Error fetching employees', err);
+      }
+    });
+  }
+
+  updateTask(): void {
+    if (!this.task.assignedEmployee && this.task.employeeId) {
+      const selectedEmployee = this.employees.find(e => e.id === Number(this.task.employeeId)); // Convert employeeId to number
+      if (selectedEmployee) {
+        this.task.assignedEmployee = selectedEmployee;
+      }
+    }
+  
+    console.log('Updating Task:', this.task); // Debugging log
+  
+    this.taskService.updateTask(this.task.id, this.task).subscribe({
+      next: (updatedTask) => {
+        console.log('Task updated successfully', updatedTask);
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.error('Error updating task', err);
+      },
+      complete: () => {
+        console.log('Task update process completed');
+      }
+    });
+  }
+  
   
 }
