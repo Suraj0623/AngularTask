@@ -1,0 +1,22 @@
+<div class="container">
+  <h2>Task Details</h2>
+
+  <!-- Display task details when data is available -->
+  <div *ngIf="task">
+    <p><strong>Title:</strong> {{ task.title }}</p>
+    <p><strong>Description:</strong> {{ task.description }}</p>
+    <p><strong>Due Date:</strong> {{ task.dueDate | date }}</p>
+    <p><strong>Status:</strong> {{ task.status }}</p>
+
+    <h3>Assigned Employee</h3>
+    <p><strong>Name:</strong> {{ task.assignedEmployee?.name }}</p>
+    <p><strong>Department:</strong> {{ task.assignedEmployee?.department }}</p>
+  </div>
+
+  <!-- Loading message if task is not yet available -->
+  <div *ngIf="!task">
+    <p>Loading task details...</p>
+  </div>
+
+ 
+</div>

@@ -1,0 +1,39 @@
+<div class="container mt-4">
+    <h2>Create New Task</h2>
+    <form (ngSubmit)="createTask()">
+      <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" [(ngModel)]="task.title" name="title" required>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" [(ngModel)]="task.description" name="description" required></textarea>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Assigned To</label>
+        <select class="form-select" [(ngModel)]="task.employeeId" name="assignedTo" required>
+          <option *ngFor="let employee of employees" [value]="employee.id">{{ employee.name }} ({{ employee.department }})</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select class="form-select" [(ngModel)]="task.status" name="status">
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label class="form-label">Due Date</label>
+        <input type="date" class="form-control" [(ngModel)]="task.dueDate" name="dueDate" required>
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Create Task</button>
+      <a routerLink="/" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+  

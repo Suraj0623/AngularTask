@@ -1,0 +1,63 @@
+<div class="container" *ngIf="task">
+  <h2>Edit Task</h2>
+  <form (ngSubmit)="onUpdateTask()">
+    <div class="form-group">
+      <label for="taskName">Task Name</label>
+      <input
+        type="text"
+        id="taskName"
+        class="form-control"
+        [(ngModel)]="task.title"
+        name="name"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="editDescription" class="form-label">Description</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="editDescription" 
+        [(ngModel)]="task.description" 
+        name="description" 
+        placeholder="Enter task description" 
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="assignedEmployee">Assigned Employee</label>
+      <select class="form-select" [(ngModel)]="task.employeeId" name="assignedTo" required>
+        <option *ngFor="let employee of employees" [value]="employee.id">{{ employee.name }} ({{ employee.department }})</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="editDueDate" class="form-label">Due Date</label>
+      <input 
+        type="date" 
+        class="form-control" 
+        id="editDueDate" 
+        [(ngModel)]="task.dueDate" 
+        name="dueDate" 
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="taskStatus">Status</label>
+      <select
+        id="taskStatus"
+        class="form-control"
+        [(ngModel)]="task.status"
+        name="status"
+        required
+      >
+        <option value="To Do">To Do</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Task</button>
+  </form>
+</div>

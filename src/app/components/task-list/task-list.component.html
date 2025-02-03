@@ -1,0 +1,43 @@
+<div class="container mt-4">
+    <h2>Task List</h2>
+    <a routerLink="/create" class="btn btn-success mb-3">Create New Task</a>
+    <div class="input-group w-50">
+    <input 
+      type="search" 
+      [(ngModel)]="searchTerm" 
+      class="form-control" 
+      placeholder="Search tasks..."
+      name="search" 
+      id="search"
+    >
+    <button class="btn btn-outline-secondary" (click)="onSearch()">
+      <i class="bi bi-search"></i> Search
+    </button>
+  </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Assigned To</th>
+          <th>Status</th>
+          <th>Due Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of filteredTasks()">
+          <td>{{ task.title }}</td>
+          <td>{{ task.employeeId }}</td>
+          <td>{{ task.status }}</td>
+          <td>{{ task.dueDate | date:'mediumDate' }}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" (click)="editTask(task.id)">Edit</button>
+            <button class="btn btn-danger btn-sm" (click)="deleteTask(task.id)">Delete</button>
+            <button class="btn btn-info" [routerLink]="['/details', task.id]">View</button>
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
